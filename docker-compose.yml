@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  client:
+    container_name: client
+    build:
+      context: .
+      dockerfile: ./apps/client/Dockerfile
+    #   target: development
+    # volumes:
+    #   - ./apps/client:/app/apps/client
+    #   - /app/node_modules
+    # command: yarn workspace client run dev
+    environment:
+      - PORT=8080
+    ports:
+      - '8080:8080'
+
+  server:
+    container_name: server
+    build:
+      context: .
+      dockerfile: ./apps/server/Dockerfile
+    #   target: development
+    # volumes:
+    #   - ./apps/server:/app
+    #   - /app/node_modules
+    # command: yarn run start:dev
+    environment:
+      - PORT=3000
+    ports:
+      - '3000:3000'
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - '80:80'
+      - '443:443'
+    depends_on:
+      - client
+      - server
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot --webroot-path=/var/www/certbot --email thanh14147@gmail.com--agree-tos --no-eff-email --staging -d localhost
