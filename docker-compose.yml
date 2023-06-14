@@ -31,20 +31,29 @@ services:
     ports:
       - '3000:3000'
 
-  nginx:
+  reverse_proxy:
+    container_name: reverse_proxy
     image: nginx:alpine
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/www/certbot
     ports:
       - '80:80'
       - '443:443'
     depends_on:
       - client
       - server
+      - ssl_certbot
 
-  certbot:
+  ssl_certbot:
+    container_name: ssl_certbot
     image: certbot/certbot
     volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    command: certonly --webroot --webroot-path=/var/www/certbot --email thanh14147@gmail.com--agree-tos --no-eff-email --staging -d localhost
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/www/certbot
+    command: certonly --webroot --webroot-path=/var/www/certbot --email <your_email> --non-interactive --agree-tos --no-eff-email --force-renew -d <your_domain>
+
+volumes:
+  certbot-etc:
+  certbot-var:
