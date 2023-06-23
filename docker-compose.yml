@@ -28,8 +28,6 @@ services:
       - VITE_PORT=8080
       - VITE_POLLS_NAMESPACE=polls
       - NODE_OPTIONS=--max-old-space-size=8192
-    # ports:
-    #   - '8080:8080'
 
   server:
     container_name: server
@@ -47,19 +45,14 @@ services:
       - REDIS_PORT=6379
       - POLL_DURATION=7200
       - JWT_SECRET=hthanh.is_me
-    ports:
-      - '3000:3000'
 
   reverse_proxy:
     container_name: reverse_proxy
     image: nginx:alpine
     volumes:
       - ./nginx/templates:/etc/nginx/templates
-      # - certbot-etc:/etc/letsencrypt
-      # - certbot-var:/var/www/certbot
     ports:
       - '80:80'
-    # - '443:443'
     depends_on:
       - client
       - server
@@ -69,17 +62,6 @@ services:
       - CLIENT_NAME=client
       - CLIENT_PORT=8080
       - NGINX_CONF_FILE=local
-      # - ssl_certbot
-  ssl_certbot:
-    container_name: ssl_certbot
-    image: certbot/certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/www/certbot
-    command: certonly --webroot --webroot-path=/var/www/certbot --email <your_email> --non-interactive --agree-tos --no-eff-email --force-renew -d <your_domain>
 
-# volumes:
-#   certbot-etc:
-#   certbot-var:
 volumes:
   redisdata:
