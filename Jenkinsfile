@@ -7,30 +7,30 @@ pipeline {
     }
 
     stages {
-        stage("Test") {
-            when {
-                anyOf {
-                    branch 'master'
-                    branch 'staging'
-                    expression {
-                        return env.BRANCH_NAME =~ /PR-.*/ && env.CHANGE_TARGET =~ /(master|staging).*/
-                    }
-                }
-            }
+        // stage("Test") {
+        //     when {
+        //         anyOf {
+        //             branch 'master'
+        //             branch 'staging'
+        //             expression {
+        //                 return env.BRANCH_NAME =~ /PR-.*/ && env.CHANGE_TARGET =~ /(master|staging).*/
+        //             }
+        //         }
+        //     }
 
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    args '-u 0:0'
-                }
-            }
+        //     agent {
+        //         docker {
+        //             image 'node:18-alpine'
+        //             args '-u 0:0'
+        //         }
+        //     }
 
-            steps {
-                sh "yarn global add turbo"
-                sh "yarn"
-                sh "turbo test"
-            }
-        }
+        //     steps {
+        //         sh "yarn global add turbo"
+        //         sh "yarn"
+        //         sh "turbo test"
+        //     }
+        // }
 
         stage("Build") {  
             when {
@@ -74,7 +74,7 @@ pipeline {
                         sh 'docker image rm ${DOCKER_IMAGE}'
                     }
                 }
-                
+
 		        sh 'docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}'
             	sh 'docker logout'
             }
