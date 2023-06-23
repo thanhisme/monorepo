@@ -61,7 +61,6 @@ services:
       - SERVER_PORT=3000
       - CLIENT_NAME=client
       - CLIENT_PORT=8080
-      - NGINX_CONF_FILE=local
 
 volumes:
   redisdata:
