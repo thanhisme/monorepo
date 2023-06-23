@@ -1,0 +1,14 @@
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name ${APP_DOMAIN} www.${APP_DOMAIN};
+
+    location / {
+        proxy_pass https://google.com;
+    }
+
+    location ~ /.well-known/acme-challenge {
+        root /var/www/certbot;
+    }
+}

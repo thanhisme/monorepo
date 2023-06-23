@@ -7,8 +7,14 @@ export default defineConfig({
 	server: {
 		host: true,
 		strictPort: true,
+		port: 8080,
 		watch: {
 			usePolling: true,
+		},
+	},
+	css: {
+		modules: {
+			localsConvention: 'camelCaseOnly',
 		},
 	},
 });
