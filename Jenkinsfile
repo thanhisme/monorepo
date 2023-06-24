@@ -35,8 +35,10 @@ pipeline {
 
         stage("Build") {  
             when {
-                branch 'master'
-                branch 'staging'
+                anyOf {
+                    branch 'master'
+                    branch 'staging'
+                }
             }
 
             steps {
@@ -49,8 +51,10 @@ pipeline {
         
         stage('Push to Docker Hub') {
             when {
-                branch 'master'
-                branch 'staging'
+                anyOf {
+                    branch 'master'
+                    branch 'staging'
+                }
             }
 
             steps {
@@ -70,8 +74,10 @@ pipeline {
         
         stage('Clean up') {
             when {
-                branch 'master'
-                branch 'staging'
+                anyOf {
+                    branch 'master'
+                    branch 'staging'
+                }
             }
 
             steps {
@@ -84,7 +90,7 @@ pipeline {
 
 		        sh 'docker image rm ${CLIENT_IMAGE}:${DOCKER_TAG}'
 		        sh 'docker image rm ${SERVER_IMAGE}:${DOCKER_TAG}'
-                
+
             	sh 'docker logout'
             }
         }
