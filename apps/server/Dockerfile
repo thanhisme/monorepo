@@ -26,8 +26,8 @@ RUN yarn install --frozen-lockfile --network-timeout 100000
 FROM base AS development
 WORKDIR /app
 
-COPY --chown=node:node --from=builder /app/out/full/apps/server .
-COPY --chown=node:node --from=installer /app/node_modules ./node_modules
+COPY --chown=node:node --from=builder /app/out/full .
+COPY --chown=node:node --from=installer /app .
 
 USER node
 

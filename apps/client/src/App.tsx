@@ -6,7 +6,7 @@ import { SampleType } from 'shared';
 
 function App() {
 	const [count, setCount] = useState(0);
-	const sample: SampleType = { message: 'Hello World!' };
+	const sample: SampleType = { message: 'Hello World!jjk njnj' };
 
 	return (
 		<>
