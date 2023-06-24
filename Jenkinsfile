@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'thanhisme/vote-app'
+        SERVER_IMAGE = 'thanhisme/vote-app-server'
+        CLIENT_IMAGE = 'thanhisme/vote-app-client'
         DOCKER_TAG="${GIT_BRANCH.tokenize('/').pop()}-${BUILD_NUMBER}-${GIT_COMMIT.substring(0,7)}"
     }
 
@@ -34,29 +35,33 @@ pipeline {
 
         stage("Build") {  
             when {
-                branch 'master|staging'
+                branch 'master'
+                branch 'staging'
             }
 
             steps {
                 script {
-                    clientImage = docker.build(DOCKER_IMAGE, '-f apps/client .')
-                    serverImage = docker.build(DOCKER_IMAGE, '-f apps/server .')
+                    clientImage = docker.build(CLIENT_IMAGE, '-f apps/client/Dockerfile .')
+                    serverImage = docker.build(SERVER_IMAGE, '-f apps/server/Dockerfile .')
                 }
             }
         }
         
         stage('Push to Docker Hub') {
             when {
-                branch 'master|staging'
+                branch 'master'
+                branch 'staging'
             }
 
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub', url: ""]) {
                     script {
-                        image.push(DOCKER_TAG)
+                        clientImage.push(DOCKER_TAG)
+                        serverImage.push(DOCKER_TAG)
                         
                         if (GIT_BRANCH ==~ /.*master.*/) {
-                            image.push('latest')
+                            clientImage.push('latest')
+                            serverImage.push('latest')
                         }
                     }
                 }
@@ -65,17 +70,21 @@ pipeline {
         
         stage('Clean up') {
             when {
-                branch 'master|staging'
+                branch 'master'
+                branch 'staging'
             }
 
             steps {
                 script {
                     if (GIT_BRANCH ==~ /.*master.*/) {
-                        sh 'docker image rm ${DOCKER_IMAGE}'
+                        sh 'docker image rm ${CLIENT_IMAGE}'
+                        sh 'docker image rm ${SERVER_IMAGE}'
                     }
                 }
 
-		        sh 'docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}'
+		        sh 'docker image rm ${CLIENT_IMAGE}:${DOCKER_TAG}'
+		        sh 'docker image rm ${SERVER_IMAGE}:${DOCKER_TAG}'
+                
             	sh 'docker logout'
             }
         }
