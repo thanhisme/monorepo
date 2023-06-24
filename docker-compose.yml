@@ -19,13 +19,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/client/Dockerfile
-      target: development
-    volumes:
-      - ./apps/client:/app/apps/client
-      - /app/node_modules
-    command: yarn workspace client run dev
     environment:
-      - VITE_PORT=8080
       - VITE_POLLS_NAMESPACE=polls
       - NODE_OPTIONS=--max-old-space-size=8192
 
@@ -34,11 +28,6 @@ services:
     build:
       context: .
       dockerfile: ./apps/server/Dockerfile
-      target: development
-    volumes:
-      - ./apps/server:/app/apps/server
-      - /app/node_modules
-    command: yarn workspace server run start:dev
     environment:
       - PORT=3000
       - REDIS_HOST=redis
@@ -50,9 +39,9 @@ services:
     container_name: reverse_proxy
     image: nginx:alpine
     volumes:
-      - ./nginx/templates:/etc/nginx/templates
+      - ./nginx/conf.d:/etc/nginx/conf.d
     ports:
-      - '80:80'
+      - '84:80'
     depends_on:
       - client
       - server
