@@ -31,8 +31,8 @@ WORKDIR /app
 COPY --chown=node:node --from=installer /app .
 COPY --chown=node:node --from=builder /app/out/full/ .
 
-# RUN mkdir /app/apps/client/node_modules/ && mkdir /app/apps/client/node_modules/.vite \
-#     && chown -R node:node /app/apps/client/node_modules/.vite
+RUN mkdir /app/apps/client/node_modules/.vite \
+    && chown -R node:node /app/apps/client/node_modules/.vite
 
 USER node
 
@@ -52,6 +52,5 @@ RUN yarn turbo build --filter=client
 FROM nginx:alpine
 
 COPY --chown=node:node --from=production /app/apps/client/dist /usr/share/nginx/html
-COPY --chown=node:node --from=production /app/apps/client/nginx/conf.d /etc/nginx/conf.d
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

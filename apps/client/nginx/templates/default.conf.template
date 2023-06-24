@@ -1,0 +1,7 @@
+server {
+    listen ${VITE_PORT} default_server;
+    listen [::]:${VITE_PORT} default_server;
+
+    root /usr/share/nginx/html;
+    index index.html index.htm;
+}

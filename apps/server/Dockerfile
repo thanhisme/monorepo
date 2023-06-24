@@ -26,8 +26,8 @@ RUN yarn install --frozen-lockfile --network-timeout 100000
 FROM base AS development
 WORKDIR /app
 
-COPY --chown=node:node --from=builder /app/out/full .
 COPY --chown=node:node --from=installer /app .
+COPY --chown=node:node --from=builder /app/out/full/ .
 
 USER node
 
@@ -59,7 +59,7 @@ USER node
 FROM base AS production
 
 COPY --chown=node:node --from=build /app/node_modules ./node_modules
-COPY --chown=node:node --from=build /app/dist ./dist
+COPY --chown=node:node --from=build /app/apps/server/dist ./dist
 
 CMD node dist/main.js
 
