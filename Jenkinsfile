@@ -97,6 +97,18 @@ pipeline {
             	sh 'docker logout'
             }
         }
+
+        stage('Deploy') {
+            when {
+                branch 'master'
+            }
+
+            steps {
+                sshagent(['ssh-droplet']) {
+                    sh "ssh -o StrictHostKeyChecking=no -l ${env.REMOTE_HOST_USER} ${env.REMOTE_HOST} 'cd ./app && cat ./deploy.sh && ./deploy.sh'"
+                }
+            }
+        }
     } 
 
     post {
