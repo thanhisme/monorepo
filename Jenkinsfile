@@ -42,6 +42,9 @@ pipeline {
             }
 
             steps {
+                sh "echo 'VITE_POLLS_NAMESPACE=${env.VITE_POLLS_NAMESPACE}' >> apps/client/.env"
+                sh "cat apps/client/.env"
+
                 script {
                     clientImage = docker.build(CLIENT_IMAGE, '-f apps/client/Dockerfile .')
                     serverImage = docker.build(SERVER_IMAGE, '-f apps/server/Dockerfile .')

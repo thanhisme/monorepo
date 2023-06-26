@@ -3,7 +3,6 @@ import { io, Socket } from 'socket.io-client';
 import { AppActions, AppState } from '../state';
 
 export const socketIOUrl = `/${import.meta.env.VITE_POLLS_NAMESPACE}`;
-console.log('url', socketIOUrl);
 
 type CreateSocketOptions = {
 	socketIOUrl: string;

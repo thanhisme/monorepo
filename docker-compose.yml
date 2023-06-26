@@ -19,9 +19,17 @@ services:
     build:
       context: .
       dockerfile: ./apps/client/Dockerfile
+      # target: development
+    volumes:
+      - ./client.env:/app/.env
     environment:
+      - VITE_PORT=80
       - VITE_POLLS_NAMESPACE=polls
       - NODE_OPTIONS=--max-old-space-size=8192
+    # args:
+    # command: yarn workspace client dev
+    ports:
+      - 85:80
 
   server:
     container_name: server
