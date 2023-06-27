@@ -1,4 +1,4 @@
-# Template monorepo
+# Vote App
 
 The following is a [link](https://voteapp.nguyenhoaithanh.tech) to a demo.
 
