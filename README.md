@@ -32,7 +32,7 @@ The following is a [link](https://voteapp.nguyenhoaithanh.tech) to a demo.
 
 This project is organized using a monorepo template provided by Turbo
 
-- `apps` contains main service (client and server)
+- `apps` contains main services (client and server)
 - `packages` holds the shared code between main services
 
 ### Prerequisites
@@ -44,10 +44,18 @@ This project is organized using a monorepo template provided by Turbo
 
 You need to follow these steps before run the application:
 
-- In `apps/client`, create a .env file with content (VITE_POLLS_NAMESPACE=polls)
-- In root dir, create `nginx/templates/default.conf.template` with content
+- In `apps/client`, create a `.env` file with the following content
+  
+```sh
+# apps/client/.env
+
+VITE_POLLS_NAMESPACE=polls
+```
+- In root dir, create `nginx/templates/default.conf.template` with the following content
 
 ```sh
+# nginx/templates/default.conf.template
+
 upstream server {
     server ${SERVER_NAME}:${SERVER_PORT};
 }
