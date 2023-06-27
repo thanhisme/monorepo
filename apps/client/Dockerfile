@@ -44,7 +44,6 @@ COPY --chown=node:node --from=development /app .
 
 USER node
 
-# RUN yarn workspace client run build
 RUN yarn turbo build --filter=client
 
 
@@ -52,5 +51,6 @@ RUN yarn turbo build --filter=client
 FROM nginx:alpine
 
 COPY --chown=node:node --from=production /app/apps/client/dist /usr/share/nginx/html
+# COPY --chown=node:node --from=production /app/apps/client/nginx/conf.d /etc/nginx/conf.d
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  redis:
+    container_name: redis
+    image: 'redislabs/rejson:2.0.0'
+    ports:
+      - '6379:6379'
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 1s
+      timeout: 2s
+      retries: 10
+
+  client:
+    container_name: client
+    build:
+      context: .
+      dockerfile: ./apps/client/Dockerfile
+      target: development
+    command: yarn workspace client run dev
+    volumes:
+      - ./apps/client:/app/apps/client
+      - /app/node_modules
+    environment:
+      - NODE_OPTIONS=--max-old-space-size=8192
+
+  server:
+    container_name: server
+    build:
+      context: .
+      dockerfile: ./apps/server/Dockerfile
+      target: development
+    volumes:
+      - ./apps/server:/app/apps/server
+      - /app/node_modules
+    command: yarn workspace server run start:dev
+    environment:
+      - PORT=3000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - POLL_DURATION=7200
+      - JWT_SECRET=hthanh.is_me
+
+  reverse_proxy:
+    container_name: reverse_proxy
+    image: nginx:alpine
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+    ports:
+      - '86:80'
+    depends_on:
+      - client
+      - server
+    environment:
+      - SERVER_NAME=server
+      - SERVER_PORT=3000
+      - CLIENT_NAME=client
+      - CLIENT_PORT=80
+
+volumes:
+  redisdata:

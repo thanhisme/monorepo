@@ -35,11 +35,6 @@ USER node
 FROM base AS build
 WORKDIR /app
 
-# COPY --chown=node:node --from=builder /app/out/full/ .
-# COPY --chown=node:node --from=installer /app .
-
-# RUN yarn turbo build --filter=server
-
 COPY --chown=node:node --from=development /app .
 
 RUN yarn run build
